@@ -1,17 +1,18 @@
 package models;
 
 import java.util.Objects;
+import models.Currency;
 
 public class ExchangeRate implements WithId {
     private static int idCounter = 0;
     private final int id;
-    private final int baseCurrencyId;
-    private final int targetCurrencyId;
-    private final double rate;
+    private final Currency baseCurrency;
+    private final Currency targetCurrency;
+    private double rate;
 
-    public ExchangeRate(int baseCurrencyId, int targetCurrencyId, double rate) {
-        this.baseCurrencyId = baseCurrencyId;
-        this.targetCurrencyId = targetCurrencyId;
+    public ExchangeRate(Currency baseCurrencyId, Currency targetCurrencyId, double rate) {
+        this.baseCurrency = baseCurrencyId;
+        this.targetCurrency = targetCurrencyId;
         this.rate = rate;
         this.id = idCounter++;
     }
@@ -20,16 +21,19 @@ public class ExchangeRate implements WithId {
         return id;
     }
 
-    public int getBaseCurrencyId() {
-        return baseCurrencyId;
-    }
 
-    public int getTargetCurrencyId() {
-        return targetCurrencyId;
+    public Currency getTargetCurrency() {
+        return targetCurrency;
     }
-
+    public Currency getBaseCurrency() {
+        return baseCurrency;
+    }
     public double getRate() {
         return rate;
+    }
+
+    public void setRate(double rate) {
+        this.rate = rate;
     }
 
     @Override
@@ -37,11 +41,12 @@ public class ExchangeRate implements WithId {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ExchangeRate that = (ExchangeRate) o;
-        return baseCurrencyId == that.baseCurrencyId && targetCurrencyId == that.targetCurrencyId && Double.compare(rate, that.rate) == 0;
+        return Double.compare(rate, that.rate) == 0 && Objects.equals(baseCurrency, that.baseCurrency)
+                && Objects.equals(targetCurrency, that.targetCurrency);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(baseCurrencyId, targetCurrencyId, rate);
+        return Objects.hash(baseCurrency, targetCurrency, rate);
     }
 }

@@ -1,6 +1,5 @@
 package dal;
 
-import models.Currency;
 import models.ExchangeRate;
 
 import java.util.ArrayList;
@@ -10,22 +9,28 @@ public class ExchangeRateDAL {
 
     private static final List<ExchangeRate> exchangeRates = new ArrayList<>();
 
-    public ExchangeRate getExchangeRateById(int id) {
+    public static ExchangeRate getExchangeRate(String baseCurrencyCode, String targetCurrencyCode) {
         return exchangeRates
                 .stream()
-                .filter(cur -> cur.getId() == id)
+                .filter(cur -> cur.getBaseCurrency().getCode().equals(baseCurrencyCode)
+                        && cur.getTargetCurrency().getCode().equals(targetCurrencyCode))
                 .findAny().orElse(null);
     }
 
-    public List<ExchangeRate> getAllCurrency() {
+    public static List<ExchangeRate> getAllExchangeRates() {
         return exchangeRates;
     }
 
-    public void addCurrency(ExchangeRate exchangeRate) {
+    public static void addExchangeRate(ExchangeRate exchangeRate) {
         if (exchangeRates.contains(exchangeRate)) {
             throw new IllegalArgumentException("Такая сущность уже существует");
         }
 
         exchangeRates.add(exchangeRate);
+    }
+
+    public static void updateExchangeRate(double rate, String baseCurrencyCode, String targetCurrencyCode) {
+         ExchangeRate exchangeRate = getExchangeRate(baseCurrencyCode, targetCurrencyCode);
+         exchangeRate.setRate(rate);
     }
 }

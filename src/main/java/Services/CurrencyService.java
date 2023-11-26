@@ -3,11 +3,12 @@ package Services;
 import dal.CurrencyDAL;
 import models.Currency;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 public class CurrencyService {
 
-    public static Currency getCurrency(String code) {
+    public static Currency getCurrency(String code)  {
         return CurrencyDAL.getCurrency(code);
     }
 
@@ -15,14 +16,16 @@ public class CurrencyService {
         return CurrencyDAL.getAllCurrency();
     }
 
-    public static boolean addCurrency(String name, String code, String sign){
-        Currency currency = new Currency(code, name, sign);
-        try {
-            CurrencyDAL.addCurrency(currency);
-        } catch (Exception e) {
-            return false;
+    public static Currency addCurrency(String name, String code, String sign) throws Exception {
+        Currency existingCurrency = getCurrency(code);
+
+        if (existingCurrency != null) {
+            throw new Exception("Такая валюта уже существует");
         }
-        return true;
+
+        Currency currency = new Currency(code, name, sign);
+        CurrencyDAL.addCurrency(currency);
+        return currency;
     }
 
 }

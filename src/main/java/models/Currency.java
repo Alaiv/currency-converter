@@ -46,4 +46,5 @@ public class Currency implements WithId {
     public int hashCode() {
         return Objects.hash(code, fullName, sign);
     }
+
 }

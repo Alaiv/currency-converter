@@ -19,11 +19,7 @@ public class CurrencyDAL {
         return currencies;
     }
 
-    public static void addCurrency(Currency currency) throws Exception {
-        if (currencies.contains(currency)) {
-            throw new Exception("Такая валюта уже существует");
-        }
-
+    public static void addCurrency(Currency currency) {
         currencies.add(currency);
     }
 }

@@ -14,32 +14,28 @@ public class CurrencyController {
     Gson gson = new Gson();
 
     public void getCurrency(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String id = req.getParameter("code");
-        Currency currency = CurrencyService.getCurrency(id);
+        String pathInfo = req.getPathInfo();
         PrintWriter out = resp.getWriter();
-
-        if (currency == null) {
-            resp.setStatus(404);
-            out.write("Валюта не найдена!");
-        } else {
+        String code = pathInfo.substring(1);
+        Currency currency = CurrencyService.getCurrency(code);
+        if (currency != null) {
             resp.setStatus(200);
             out.write(gson.toJson(currency));
+        } else {
+            resp.setStatus(404);
+            out.write("Валюта не найдена!");
         }
+
     }
 
     public void getAllCurrency(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter out = resp.getWriter();
         List<Currency> currencies = CurrencyService.getAllCurrency();
 
+        String currenciesJson = gson.toJson(currencies);
+        resp.setStatus(200);
+        out.write(currenciesJson);
 
-        if (!currencies.isEmpty()) {
-            String currenciesJson = gson.toJson(currencies);
-            resp.setStatus(200);
-            out.write(currenciesJson);
-        } else {
-            resp.setStatus(404);
-            out.write("Список валют пуст!");
-        }
     }
 
     public void addCurrency(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -54,16 +50,14 @@ public class CurrencyController {
             return;
         }
 
-        boolean currencyIsAdded = CurrencyService.addCurrency(name, code, sign);
-
-        if (!currencyIsAdded) {
+        try {
+            Currency addedCurrency = CurrencyService.addCurrency(name, code, sign);
+            resp.setStatus(201);
+            out.write(gson.toJson(addedCurrency));
+        } catch (Exception e) {
             resp.setStatus(409);
-            out.write("Такая валюта уже существует!");
-            return;
+            out.write(e.getMessage());
         }
-
-        resp.setStatus(201);
-        out.write("Валюта успешно добавлена!");
 
     }
 
