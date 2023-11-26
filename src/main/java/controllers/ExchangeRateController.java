@@ -71,7 +71,7 @@ public class ExchangeRateController {
         String rate = req.getParameter("rate");
         PrintWriter out = resp.getWriter();
 
-        if (MyValidator.allFieldsAreValid(List.of(rate))) {
+        if (!MyValidator.allFieldsAreValid(List.of(rate))) {
             resp.setStatus(400);
             out.write("Переданы не все параметры!");
             return;

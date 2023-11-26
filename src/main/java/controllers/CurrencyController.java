@@ -2,6 +2,7 @@ package controllers;
 
 import Services.CurrencyService;
 import com.google.gson.Gson;
+import helpers.MyValidator;
 import models.Currency;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +45,7 @@ public class CurrencyController {
         String sign = req.getParameter("sign");
         PrintWriter out = resp.getWriter();
 
-        if (!fieldsAreValid(name, code, sign)) {
+        if (!MyValidator.allFieldsAreValid(List.of(name, code, sign))) {
             resp.setStatus(400);
             out.write("Переданы не все параметры!");
             return;
@@ -61,7 +62,4 @@ public class CurrencyController {
 
     }
 
-    private boolean fieldsAreValid(String name, String code, String sign) {
-        return name != null && code != null && sign != null;
-    }
 }
