@@ -15,7 +15,7 @@ public class Specs {
     RequestSpecification requestSpecification = new RequestSpecBuilder()
             .setBaseUri(MyConfig.getUrl())
             .setPort(MyConfig.getPort())
-            .setContentType(ContentType.URLENC)
+            .setContentType(ContentType.JSON)
             .setConfig(config)
             .build();
 
