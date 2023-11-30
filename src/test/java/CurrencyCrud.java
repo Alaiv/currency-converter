@@ -1,21 +1,38 @@
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
-import org.checkerframework.checker.units.qual.C;
+import models.WithSearchIdentificator;
 
 import static io.restassured.RestAssured.given;
 
 public class CurrencyCrud implements CrudEntity{
     @Override
-    public Response get(ResponseSpecification responseSpec, RequestSpecification requestSpec) {
-        return null;
+    public Response getAll(ResponseSpecification responseSpec, RequestSpecification requestSpec) {
+        return given()
+                .spec(requestSpec)
+                .get("/currencies")
+                .then()
+                .spec(responseSpec)
+                .extract()
+                .response();
     }
 
     @Override
-    public <T> Response add(T currency, ResponseSpecification responseSpec, RequestSpecification requestSpec) {
+    public <T extends WithSearchIdentificator> Response getOne(T currency, ResponseSpecification responseSpec, RequestSpecification requestSpec) {
         return given()
                 .spec(requestSpec)
-                .body(currency)
+                .get("/currency/" + currency.getSearchIdentificator())
+                .then()
+                .spec(responseSpec)
+                .extract()
+                .response();
+    }
+
+    @Override
+    public Response add(String jsonBody, ResponseSpecification responseSpec, RequestSpecification requestSpec) {
+        return given()
+                .spec(requestSpec)
+                .body(jsonBody)
                 .post("/currencies")
                 .then()
                 .spec(responseSpec)

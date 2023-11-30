@@ -20,7 +20,7 @@ public class CurrencyController {
     public void getCurrency(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
         PrintWriter out = resp.getWriter();
-        String code = pathInfo.substring(1);
+        String code = pathInfo.substring(1).toUpperCase();
         Currency currency = CurrencyService.getCurrency(code);
         if (currency != null) {
             resp.setStatus(200);
@@ -47,9 +47,12 @@ public class CurrencyController {
         String body = getRequestBody(req);
         Currency currency = serializer.extractFrom(body, Currency.class);
 
-        if (!MyValidator.allFieldsAreValid(currency.getAllRequiredFields())) {
+        boolean fieldsAreValid = MyValidator.allFieldsAreValid(currency.getAllRequiredFields());
+        boolean validCodeLength = currency.getCode() != null && currency.getCode().length() == 3;
+
+        if (!fieldsAreValid || !validCodeLength) {
             resp.setStatus(400);
-            out.write("Переданы не все параметры!");
+            out.write(!fieldsAreValid ? "Переданы не все параметры!" : "Указан не валидный код валюты!");
             return;
         }
 

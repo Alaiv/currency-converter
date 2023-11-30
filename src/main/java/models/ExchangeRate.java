@@ -3,12 +3,17 @@ package models;
 import java.util.Objects;
 import models.Currency;
 
-public class ExchangeRate implements WithId {
+public class ExchangeRate implements WithSearchIdentificator {
     private static int idCounter = 0;
     private final int id;
     private final Currency baseCurrency;
     private final Currency targetCurrency;
     private double rate;
+
+    @Override
+    public String getSearchIdentificator() {
+        return baseCurrency.getSearchIdentificator() + targetCurrency.getSearchIdentificator();
+    }
 
     public ExchangeRate(Currency baseCurrencyId, Currency targetCurrencyId, double rate) {
         this.baseCurrency = baseCurrencyId;

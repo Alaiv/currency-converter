@@ -3,10 +3,11 @@ package models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Currency implements WithId, WithRequiredFields{
+public class Currency implements WithSearchIdentificator, WithRequiredFields{
     @JsonIgnore
     static int idCounter = 0;
     @JsonIgnore
@@ -38,8 +39,16 @@ public class Currency implements WithId, WithRequiredFields{
         return sign;
     }
 
+    public String getSearchIdentificator() {
+        return getCode();
+    }
+
     public List<Object> getAllRequiredFields() {
-        return List.of(code, fullName, sign);
+        List<Object> t = new ArrayList<>();
+        t.add(code);
+        t.add(fullName);
+        t.add(sign);
+        return t;
     }
 
     @Override
