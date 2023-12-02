@@ -1,3 +1,4 @@
+package infrastructure;
 
 public class MyConfig {
     private static final String URL = "http://localhost";

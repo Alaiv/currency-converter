@@ -3,6 +3,7 @@ package controllers;
 import Services.ExchangeRateService;
 import com.google.gson.Gson;
 import helpers.MyValidator;
+import helpers.Serializer;
 import models.ExchangeRate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,9 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ExchangeRateController {
     Gson gson = new Gson();
+    Serializer serializer = new Serializer();
     public void getAllExchangeRates(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter out = resp.getWriter();
         List<ExchangeRate> allRate = ExchangeRateService.getAllExchangeRates();
@@ -45,19 +48,26 @@ public class ExchangeRateController {
     }
 
     public void addExchangeRate(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String baseCur = req.getParameter("baseCurrency");
-        String targetCur = req.getParameter("targetCurrency");
-        String rate = req.getParameter("rate");
+        String body = getRequestBody(req);
+        ExchangeRate exchangeRateDto = serializer.extractFrom(body, ExchangeRate.class);
         PrintWriter out = resp.getWriter();
 
-        if (!MyValidator.allFieldsAreValid(List.of(baseCur, targetCur, rate))) {
+        boolean fieldsAreValid = MyValidator.allFieldsAreValid(exchangeRateDto.getAllRequiredFields());
+        boolean validExchangeRateLength = exchangeRateDto.getSearchIdentificator() != null
+                && exchangeRateDto.getSearchIdentificator().length() == 6;
+
+        if (!fieldsAreValid || !validExchangeRateLength) {
             resp.setStatus(400);
-            out.write("Переданы не все параметры!");
+            out.write(!fieldsAreValid ? "Переданы не все параметры!" : "Указаны не валидные коды валют!");
             return;
         }
 
         try {
-            ExchangeRate exchangeRate = ExchangeRateService.addExchangeRate(baseCur, targetCur, Double.parseDouble(rate));
+            ExchangeRate exchangeRate = ExchangeRateService
+                    .addExchangeRate(
+                            exchangeRateDto.getBaseCurrency().getCode(),
+                            exchangeRateDto.getTargetCurrency().getCode(),
+                            exchangeRateDto.getRate());
             resp.setStatus(201);
             out.write(gson.toJson(exchangeRate));
         } catch (Exception e) {
@@ -96,6 +106,10 @@ public class ExchangeRateController {
             resp.setStatus(404);
             out.write(e.getMessage());
         }
+    }
+
+    private String getRequestBody(HttpServletRequest request) throws IOException {
+        return request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
     }
 
 

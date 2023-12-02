@@ -1,3 +1,4 @@
+import cruds.CurrencyCrud;
 import helpers.Serializer;
 import io.restassured.response.Response;
 import models.Currency;
@@ -11,9 +12,8 @@ import java.util.List;
 import java.util.Random;
 
 public class CurrencyTests extends BaseTests {
-    Serializer serializer = new Serializer();
+
     CurrencyCrud currencyCrud = new CurrencyCrud();
-    Random random = new Random();
 
     @ParameterizedTest(name = "{index} - {0} currency added")
     @ValueSource(strings = {"UASDASDKASJDALSKDASDASDASDASDAS", "$", ""})
@@ -28,18 +28,6 @@ public class CurrencyTests extends BaseTests {
         Currency addedCurrency = getAddedObjectFromResponse(response);
 
         Assertions.assertEquals(currency, addedCurrency);
-    }
-
-    private List<Currency> currencyProvider() {
-        String fillerCode = getRandomCurrencyCode();
-        String fillerCode2 = getRandomCurrencyCode();
-
-        Currency withEmptyCode = new Currency(null, "test", "$");
-        Currency withEmptyName = new Currency(fillerCode, null, "$");
-        Currency withEmptySign = new Currency(fillerCode2, "test", null);
-        Currency withAllEmptyFields = new Currency(null, null, null);
-
-        return List.of(withEmptyCode, withEmptyName, withEmptySign, withAllEmptyFields);
     }
     @ParameterizedTest(name = "{index} - {0} currency not added")
     @MethodSource("currencyProvider")
@@ -90,9 +78,19 @@ public class CurrencyTests extends BaseTests {
         Assertions.assertEquals("Такая валюта уже существует", response.getBody().asString());
     }
 
-    private String getRandomCurrencyCode() {
-        return Integer.toString(random.nextInt(100, 500000)).substring(0, 3);
+    private List<Currency> currencyProvider() {
+        String fillerCode = getRandomCurrencyCode();
+        String fillerCode2 = getRandomCurrencyCode();
+
+        Currency withEmptyCode = new Currency(null, "test", "$");
+        Currency withEmptyName = new Currency(fillerCode, null, "$");
+        Currency withEmptySign = new Currency(fillerCode2, "test", null);
+        Currency withAllEmptyFields = new Currency(null, null, null);
+
+        return List.of(withEmptyCode, withEmptyName, withEmptySign, withAllEmptyFields);
     }
+
+
 
     private Currency getAddedObjectFromResponse(Response response) {
         return serializer.extractFrom(response.getBody().asString(), Currency.class);

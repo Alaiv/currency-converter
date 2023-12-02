@@ -1,9 +1,11 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import models.Currency;
 
-public class ExchangeRate implements WithSearchIdentificator {
+public class ExchangeRate implements WithSearchIdentificator, WithRequiredFields {
     private static int idCounter = 0;
     private final int id;
     private final Currency baseCurrency;
@@ -53,5 +55,14 @@ public class ExchangeRate implements WithSearchIdentificator {
     @Override
     public int hashCode() {
         return Objects.hash(baseCurrency, targetCurrency, rate);
+    }
+
+    @Override
+    public List<Object> getAllRequiredFields() {
+        List<Object> t = new ArrayList<>();
+        t.add(baseCurrency);
+        t.add(targetCurrency);
+        t.add(rate);
+        return t;
     }
 }

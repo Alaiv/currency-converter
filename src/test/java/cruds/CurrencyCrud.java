@@ -1,3 +1,6 @@
+package cruds;
+
+import cruds.CrudEntity;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -5,7 +8,7 @@ import models.WithSearchIdentificator;
 
 import static io.restassured.RestAssured.given;
 
-public class CurrencyCrud implements CrudEntity{
+public class CurrencyCrud implements CrudEntity {
     @Override
     public Response getAll(ResponseSpecification responseSpec, RequestSpecification requestSpec) {
         return given()

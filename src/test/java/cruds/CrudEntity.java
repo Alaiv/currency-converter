@@ -1,3 +1,5 @@
+package cruds;
+
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
