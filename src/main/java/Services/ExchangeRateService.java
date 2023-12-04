@@ -25,11 +25,29 @@ public class ExchangeRateService {
         Currency baseCurrency = CurrencyService.getCurrency(baseCurrencyCode);
         Currency targetCurrency = CurrencyService.getCurrency(targetCurrencyCode);
 
-        if (baseCurrency == null || targetCurrency == null) throw new Exception("Указанные валюты отсутствуют");
+        if (someCurrencyDoNotExist(baseCurrency, targetCurrency))
+            throw new Exception("Указанные валюты отсутствуют");
 
         ExchangeRate exchangeRate = new ExchangeRate(baseCurrency, targetCurrency, rate);
+
+        if (exchangeRateExists(exchangeRate))
+            throw new Exception("Указанный курс обмена уже существует!");
+
         ExchangeRateDAL.addExchangeRate(exchangeRate);
         return exchangeRate;
+    }
+
+    private static boolean someCurrencyDoNotExist(Currency base, Currency target) {
+        return base == null || target == null;
+    }
+
+    private static boolean exchangeRateExists(ExchangeRate exchangeRate) {
+        try {
+            getExchangeRate(exchangeRate.getSearchIdentificator());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public static ExchangeRate updateExchangeRate(double rate, String baseAndTargetCode) throws Exception {
