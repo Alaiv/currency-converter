@@ -15,7 +15,7 @@ public class CurrencyTests extends BaseTests {
 
     CurrencyCrud currencyCrud = new CurrencyCrud();
 
-    @ParameterizedTest(name = "{index} - {0} currency added")
+    @ParameterizedTest
     @ValueSource(strings = {"UASDASDKASJDALSKDASDASDASDASDAS", "$", ""})
     public void addCurrencyTest(String val) {
         String fillerCode = getRandomCurrencyCode();
@@ -29,7 +29,7 @@ public class CurrencyTests extends BaseTests {
 
         Assertions.assertEquals(currency, addedCurrency);
     }
-    @ParameterizedTest(name = "{index} - {0} currency not added")
+    @ParameterizedTest
     @MethodSource("currencyProvider")
     public void addCurrencyWithEmptyCode(Currency currency) {
         String currencyJson = serializer.convertToJson(currency);
@@ -39,7 +39,7 @@ public class CurrencyTests extends BaseTests {
         Assertions.assertEquals("Переданы не все параметры!", response.getBody().asString());
     }
 
-    @ParameterizedTest(name = "{index} - {0} currency not added")
+    @ParameterizedTest
     @ValueSource(strings = {"UA", "UADO"})
     public void addCurrencyWithInvalidLengthCode(String code) {
         Currency currency = new Currency(code, "test", "$");

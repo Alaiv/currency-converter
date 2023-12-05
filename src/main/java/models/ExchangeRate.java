@@ -3,21 +3,22 @@ package models;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import models.Currency;
 
 public class ExchangeRate implements WithSearchIdentificator, WithRequiredFields {
     private static int idCounter = 0;
     private final int id;
     private final Currency baseCurrency;
     private final Currency targetCurrency;
-    private double rate;
+    private Double rate;
 
     @Override
     public String getSearchIdentificator() {
+        if (baseCurrency == null || targetCurrency == null)
+            return null;
         return baseCurrency.getSearchIdentificator() + targetCurrency.getSearchIdentificator();
     }
 
-    public ExchangeRate(Currency baseCurrencyId, Currency targetCurrencyId, double rate) {
+    public ExchangeRate(Currency baseCurrencyId, Currency targetCurrencyId, Double rate) {
         this.baseCurrency = baseCurrencyId;
         this.targetCurrency = targetCurrencyId;
         this.rate = rate;

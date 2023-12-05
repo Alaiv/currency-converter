@@ -13,9 +13,8 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CurrencyController {
-    Gson gson = new Gson();
-    Serializer serializer = new Serializer();
+public class CurrencyController extends Controller{
+
 
     public void getCurrency(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String pathInfo = req.getPathInfo();
@@ -66,10 +65,6 @@ public class CurrencyController {
             out.write(e.getMessage());
         }
 
-    }
-
-    private String getRequestBody(HttpServletRequest request) throws IOException {
-        return request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
     }
 
 }

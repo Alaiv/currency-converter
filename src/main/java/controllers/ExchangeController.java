@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-public class ExchangeController {
+public class ExchangeController extends Controller{
     public void exchange(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String fromCurrency = req.getParameter("from");
         String toCurrency = req.getParameter("to");
@@ -21,8 +21,6 @@ public class ExchangeController {
             out.write("Переданы не все параметры!");
             return;
         }
-
-
 
         //todo change response write to object with amount and converted fields
         try {

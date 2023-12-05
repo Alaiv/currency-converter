@@ -13,9 +13,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ExchangeRateController {
-    Gson gson = new Gson();
-    Serializer serializer = new Serializer();
+public class ExchangeRateController extends Controller{
     public void getAllExchangeRates(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter out = resp.getWriter();
         List<ExchangeRate> allRate = ExchangeRateService.getAllExchangeRates();
@@ -56,9 +54,15 @@ public class ExchangeRateController {
         boolean validExchangeRateLength = exchangeRateDto.getSearchIdentificator() != null
                 && exchangeRateDto.getSearchIdentificator().length() == 6;
 
+        resp.setStatus(400);
+
         if (!fieldsAreValid || !validExchangeRateLength) {
-            resp.setStatus(400);
             out.write(!fieldsAreValid ? "Переданы не все параметры!" : "Указаны не валидные коды валют!");
+            return;
+        }
+
+        if (exchangeRateDto.getRate() < 0) {
+            out.write("Ставка не может быть отрицательной!");
             return;
         }
 
@@ -108,9 +112,7 @@ public class ExchangeRateController {
         }
     }
 
-    private String getRequestBody(HttpServletRequest request) throws IOException {
-        return request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-    }
+
 
 
 }
